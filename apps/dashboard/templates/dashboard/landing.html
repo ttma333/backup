@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block on_page_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/basic.min.css' %}" > 
+  <link rel="stylesheet" type="text/css" href="{% static 'css/dropzone.min.css' %}" />
+{% endblock on_page_css %}
+
+{% block content %}
+    <div class="col-md-11 mx-4">
+        <h1>이미지를 drag and drop으로 올리세요</h1>
+        <form action="{% url 'dashboard:result_url' %}" class="dropzone">
+            {% csrf_token %}
+        </form>
+        <form action="{% url 'dashboard:delete_files' %}" id="delete-form" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete_files">
+            <button type="submit" class="btn btn-sm btn-outline-info mt-2">Delete</button>
+        </form>
+    </div>
+    
+{% endblock %}
+
+{% block on_page_js %}
+<script src="{% static 'js/dropzone.min.js' %}"></script>
+
+<script>
+    {% include 'images/partials/_dzconfig.html' %}
+</script>
+
+{% endblock on_page_js %}
+
