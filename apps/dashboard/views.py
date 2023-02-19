@@ -1,10 +1,6 @@
 from django.shortcuts import render
 import os
-import yolov5
-import os
-import cv2
 import io
-import os
 import glob
 from PIL import Image
 import torch
@@ -18,14 +14,14 @@ def landing(request):
 def result_images(request):
     if request.method == "POST":
         model = torch.hub.load(
-            'ultralytics/yolov5', 'custom', path='C:/Users/admin/school_study/django-object-detection/apps/dashboard/semi_best_0206_0911.pt', autoshape=True
+            'ultralytics/yolov5', 'custom', path='E:/다운로드/backup/apps/dashboard/semi_best_0206_0911.pt', autoshape=True
         )  # force_reload = recache latest code
         model.eval()
 
-        file = request.FILES.getlist('file')
+        file_ = request.FILES.getlist('file')
         pf = []
         context = {}
-        for file in file:
+        for file in file_:
             filename = file.name.rsplit("/")[0]
             img_bytes = file.read()
             img = Image.open(io.BytesIO(img_bytes))
@@ -44,19 +40,25 @@ def result_images(request):
             if len(data) != 0:
                 pf.append("FAIL")
             root = "media/finddetectimage"
+            if not os.path.isdir(root):      #파일명 리스트로 저장
+                return "Error : not found!"
             files = []
             for file in glob.glob("{}/*.*".format(root)):
                 fname = file.split(os.sep)[-1]
                 files.append(fname)
-            firstimage = "media/finddetectimage"+files[0]
+            print("파일스 :",files)
+            firstimage = "media/finddetectimage/"+files[0]
         
             context["files"] = files
             context["pf"] = pf
             context["firstimage"] = firstimage
-            context["enumerate"] = enumerate
-            context["len"] = len
         print(pf)
-        return render(request, 'dashboard/result.html',context)
+        print(context)
+        request.session['context'] = context
+        return render(request,'dashboard/result.html',context)
+    else:
+        context = request.session.get('context', {})
+        return render(request,'dashboard/result.html',context)
     
 def delete_files(request):
     

@@ -6,5 +6,5 @@ app_name = 'dashboard'
 urlpatterns = [
     path('',views.landing,name='dashboard_url'),
     path('delete/', views.delete_files, name='delete_files'),
-    path('result/', views.result_images, name='result_url'),
+    path('a/', views.result_images, name='result_url'),
  ]

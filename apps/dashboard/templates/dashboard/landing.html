@@ -9,7 +9,7 @@
 {% block content %}
     <div class="col-md-11 mx-4">
         <h1>이미지를 drag and drop으로 올리세요</h1>
-        <form action="{% url 'dashboard:result_url' %}" class="dropzone">
+        <form action="{% url 'dashboard:result_url' %}" class="dropzone" id="my-dropzone">
             {% csrf_token %}
         </form>
         <form action="{% url 'dashboard:delete_files' %}" id="delete-form" method="POST">
@@ -25,7 +25,17 @@
 <script src="{% static 'js/dropzone.min.js' %}"></script>
 
 <script>
-    {% include 'images/partials/_dzconfig.html' %}
+    {% include 'dashboard/_dzconfig.html' %}
+
+    // submit the form and redirect to the result page after upload is complete
+    Dropzone.options.myDropzone = {
+        init: function() {
+            this.on("queuecomplete", function() {
+                document.getElementById("my-dropzone").submit();
+                window.location.href = "{% url 'dashboard:result_url' %}";
+            });
+        }
+    };
 </script>
 
 {% endblock on_page_js %}
